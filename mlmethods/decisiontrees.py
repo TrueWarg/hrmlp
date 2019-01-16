@@ -1,6 +1,7 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
 
+# Propably, it is  not necessary wrap
 def get_trained_decision_tree_classifier_search_cv(
     X_train,  
     y_train, 
@@ -20,6 +21,7 @@ def get_trained_decision_tree_classifier_search_cv(
     tree_grid.fit(X_train, y_train)
     return tree_grid
 
+# If will be make learning's functional for client, should add another important customizable params
 def get_tree_classifier_grid_params(
     max_depth_range=range(1,DEFALULT_TOP_MAX_FEATURES_VALUE),
     top_max_features_range=(1, DEFALULT_TOP_MAX_FEATURES_VALUE)):
