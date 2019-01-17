@@ -7,14 +7,14 @@ def get_trained_decision_tree_classifier_search_cv(
     y_train, 
     tree_grid_params, 
     cross_validation_coun=DEFALULT_CROSS_VALIDATION_COUNT, 
-    jobs_count=DEFALULT_JOBS_COUNT,
+    n_jobs=DEFALULT_N_JOBS,
     verbose=True):
 
     tree_grid=GridSearchCV(
         estimator=DecisionTreeClassifier(), 
         param_grid=tree_grid_params, 
         cv=cross_validation_coun, 
-        n_jobs=jobs_count,
+        n_jobs=n_jobs,
         verbose=verbose
     )
 
@@ -42,4 +42,4 @@ DEFALULT_TOP_MAX_FEATURES_VALUE = 7
 
 # grid search cv default values 
 DEFALULT_CROSS_VALIDATION_COUNT = 5
-DEFALULT_JOBS_COUNT = 1
+DEFALULT_N_JOBS = 1
