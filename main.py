@@ -1,10 +1,12 @@
 import os
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 import api.utils as utils 
 import api.static.res as apires
 import api.static.constants as apiconstants
 import mlmethods.training as training
+import prediction.prediction as prd
+import validation.validation as vld
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = apiconstants.DEFAULT_UPLOAD_PATH
@@ -25,8 +27,8 @@ def upload_trained_model():
         return apires.UPLOAD_TRAINED_MODEL_SUCCESS_MESSAGE
     return apires.UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
-@app.route('/mlmethods/training/randomforest', methods = ['POST'])
-def train_random_forest():
+@app.route('/mlmethods/training/decisiontree', methods = ['POST'])
+def train_decision_tree():
     data_set = request.files['dataSet']
     if data_set and utils.is_allowed_file(data_set.filename, apiconstants.ALLOWED_DATA_SET_FILE_EXTENSIONS):
          # TODO Add validation object features if it needed for client 
@@ -35,6 +37,24 @@ def train_random_forest():
         return 'Complete'
     return 'Error'
 
+@app.route('/prediction/decisiontree', methods = ['POST'])
+def decisiontree_predict():
+    features = {
+        'satisfaction_level' : [request.form['satisfaction_level']],      
+        'last_evaluation' : [request.form['last_evaluation']],
+        'number_project' : [request.form['number_project']],
+        'average_montly_hours' : [request.form['average_montly_hours']],
+        'time_spend_company' : [request.form['time_spend_company']],
+        'Work_accident' : [request.form['Work_accident']],
+        'promotion_last_5years' : [request.form['promotion_last_5years']]
+    }
+    if vld.validate_featues(features):
+        class_, proba = prd.get_prediction(features)
+        return jsonify(
+            class_ = str(class_),
+            proba = str(proba[0])
+        )
+    return "Prediction error"
+
 if __name__ == '__main__':
     app.run()
-
