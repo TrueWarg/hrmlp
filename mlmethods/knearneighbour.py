@@ -4,7 +4,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 import constatns as const
 
-# this method for default trained functionality 
+# this method for default training functionality 
 def get_kneighbors_classifier_search_cv(x_train, y_train):
     knn_params = {const.KNN_PARAM_NEIGHBORS_COUNT: range(2, 3)}
     knn_pipe = Pipeline([('scaler', StandardScaler()), ('knn', KNeighborsClassifier())])

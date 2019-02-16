@@ -2,7 +2,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
 import constatns as const
 
-# this method for default trained functionality 
+# this method for default training functionality 
 def get_trained_decision_tree_classifier_search_cv(x_train, y_train):
     tree_params = {
         const.MAX_DEPTH : range(
