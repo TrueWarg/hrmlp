@@ -1,6 +1,6 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
-import constatns as const
+import mlmethods.constatns as const
 
 # this method for default training functionality 
 def get_trained_random_forest_classifier_search_cv(X_train, y_train):
@@ -22,7 +22,8 @@ def get_trained_random_forest_classifier_search_cv(X_train, y_train):
         param_grid=forest_params, 
         n_jobs=const.JOBS_NUMBER, 
         cv=stratified_k_fold, 
-        scoring=const.GRID_SEARCH_CV_SCORING)  
+        scoring=const.GRID_SEARCH_CV_SCORING,
+        verbose=1)  
 
     random_forest_grid.fit(X_train, y_train)
     return random_forest_grid

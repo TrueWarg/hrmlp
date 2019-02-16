@@ -4,13 +4,10 @@ from werkzeug.utils import secure_filename
 import api.utils as utils 
 import api.static.res as apires
 import api.static.constants as apiconstants
-import mlmethods.randomforest as randomforest
+import mlmethods.training as training
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = apiconstants.DEFAULT_UPLOAD_PATH
-
-if __name__ == '__main__':
-    app.run()
 
 @app.route('/')
 def test():
@@ -29,8 +26,15 @@ def upload_trained_model():
     return apires.UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
 @app.route('/mlmethods/training/randomforest', methods = ['POST'])
-def train_randomforest():
+def train_random_forest():
     data_set = request.files['dataSet']
     if data_set and utils.is_allowed_file(data_set.filename, apiconstants.ALLOWED_DATA_SET_FILE_EXTENSIONS):
-        #  TODO Add validation and binarization object features if it needed for client
+         # TODO Add validation object features if it needed for client 
+        target = request.form['target']
+        training.default_tree(data_set, target)
+        return 'Complete'
+    return 'Error'
+
+if __name__ == '__main__':
+    app.run()
 

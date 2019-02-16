@@ -1,6 +1,6 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
-import constatns as const
+import mlmethods.constatns as const
 
 # this method for default training functionality 
 def get_trained_decision_tree_classifier_search_cv(x_train, y_train):
