@@ -2,6 +2,7 @@ import pandas as pd
 import mlmethods.randomforest as randomforest 
 import mlmethods.decisiontrees as tree 
 import modelstorage.modelstorage as storage
+from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 
 def default_random_forest(data_set, target):
     print(str(data_set))
@@ -9,8 +10,9 @@ def default_random_forest(data_set, target):
     y = df[target]
     X = __binarize_object_features(df, target)
     random_forest_grid = randomforest.get_trained_random_forest_classifier_search_cv(X, y)
+    # TODO Add generation uni model id 
     storage.save_to_storage_by_id(random_forest_grid, 'hrml_test')
-    return 
+    return storage
 
 def default_tree(data_set, target):
     print(str(data_set))

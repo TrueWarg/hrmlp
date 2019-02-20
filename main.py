@@ -5,6 +5,7 @@ import api.utils as utils
 import api.static.res as apires
 import api.static.constants as apiconstants
 import mlmethods.training as training
+# TODO need to rename this bull*** package 
 import prediction.prediction as prd
 import validation.validation as vld
 
@@ -34,11 +35,12 @@ def train_decision_tree():
          # TODO Add validation object features if it needed for client 
         target = request.form['target']
         training.default_tree(data_set, target)
-        return 'Complete'
+        return 'Success'
     return 'Error'
 
 @app.route('/prediction/decisiontree', methods = ['POST'])
 def decisiontree_predict():
+    # TODO make common solution (f.e. array) 
     features = {
         'satisfaction_level' : [request.form['satisfaction_level']],      
         'last_evaluation' : [request.form['last_evaluation']],
@@ -51,8 +53,8 @@ def decisiontree_predict():
     if vld.validate_featues(features):
         class_, proba = prd.get_prediction(features)
         return jsonify(
-            class_ = str(class_),
-            proba = str(proba[0])
+            willLeave = str(class_[0] == 1),
+            leavingProbability = str(proba[0][1])
         )
     return "Prediction error"
 
