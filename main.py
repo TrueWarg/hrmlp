@@ -3,8 +3,7 @@ import api.utils as utils
 import api.static.res as apires
 import api.static.constants as apiconstants
 import mlmethods.training as training
-# TODO need to rename this bull*** package 
-import prediction.prediction as prd
+import prediction.classification as clf
 import validation.featurevalidation as vld
 from flask import Flask, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
@@ -51,7 +50,7 @@ def decisiontree_predict():
         'promotion_last_5years' : [request.form['promotion_last_5years']]
     }
     if vld.validate_featues(features):
-        class_, proba = prd.get_prediction(features)
+        class_, proba = clf.get_prediction(features)
         return jsonify(
             willLeave = str(class_[0] == 1),
             leavingProbability = str(proba[0][1])
