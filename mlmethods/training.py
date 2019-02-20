@@ -1,7 +1,7 @@
 import pandas as pd
 import mlmethods.randomforest as randomforest 
 import mlmethods.decisiontrees as tree 
-import modelstorage.modelstorage as storage
+import storage.modelstorage as storage
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 
 def default_random_forest(data_set, target):
