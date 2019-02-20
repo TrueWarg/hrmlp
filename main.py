@@ -1,13 +1,13 @@
 import os
-from flask import Flask, request, redirect, url_for, jsonify
-from werkzeug.utils import secure_filename
 import api.utils as utils 
 import api.static.res as apires
 import api.static.constants as apiconstants
 import mlmethods.training as training
 # TODO need to rename this bull*** package 
 import prediction.prediction as prd
-import validation.validation as vld
+import validation.featurevalidation as vld
+from flask import Flask, request, redirect, url_for, jsonify
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = apiconstants.DEFAULT_UPLOAD_PATH
