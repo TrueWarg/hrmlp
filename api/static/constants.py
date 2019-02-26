@@ -1,6 +1,18 @@
+# file's extentions
+ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS = set(['joblib'])
+ALLOWED_DATA_SET_FILE_EXTENSIONS = set(['csv'])
+
+# reauest params
+UPLOAD_TRAINED_MODEL_REQUEST_PARAM = 'trainedModel'
+DATA_SET_REQUEST_PARAM = 'dataSet'
+RETURN_MODEL_ID_REQUEST_PARAM = 'modelId'
+TRAINING_TARGET_FEATURE_REQUEST_PARAM = 'target'
+TRAINING_RETURN_METRICS_REQUEST_PARAM = 'returnMetrics'
+
+
+# misc
+UPLOAD_FOLDER_CONFIG_PARAM = 'UPLOAD_FOLDER'
+
 # testing dirictory 
 DEFAULT_UPLOAD_PATH = 'D:\\trainedmodels'
-# probably, will be more,
-ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS = set(['joblib'])
-# for example .xls
-ALLOWED_DATA_SET_FILE_EXTENSIONS = set(['csv'])
+

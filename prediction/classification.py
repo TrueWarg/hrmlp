@@ -1,4 +1,4 @@
-import modelstorage.modelstorage as storage
+import storage.modelstorage as storage
 import pandas as pd
 
 def get_prediction(filled_form, model_id = 'hrml_test'):
