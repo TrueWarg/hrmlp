@@ -3,6 +3,7 @@ import mlmethods.training as training
 import prediction.classification as clf
 import validation.featurevalidation as vld
 from api.utils import *
+from api.response import *
 from api.static.constants import *
 from api.static.res import *
 from flask import Flask, request, redirect, url_for, jsonify
@@ -32,11 +33,12 @@ def train_decision_tree():
         target = request.form[TRAINING_TARGET_FEATURE_REQUEST_PARAM]
         reutrn_metrics = request.form[TRAINING_RETURN_METRICS_REQUEST_PARAM]
         if (reutrn_metrics == True):
-            train_result_description = training.get_default_tree_metrics(data_set, target)
+            report = training.get_default_tree_with_report(data_set, target)
+            response = classifiaction_metrics_response(report)
         else:
-            train_result_description = training.train_default_tree(data_set, target)
-        return train_result_description
-    return 'Error'
+            training.train_default_tree(data_set, target)
+            response = complete_training_response()
+        return response
 
 @app.route('/prediction/decisiontree', methods = ['POST'])
 def decisiontree_predict():
@@ -65,4 +67,5 @@ def test():
 
 if __name__ == '__main__':
     app.run()
+
 

@@ -23,7 +23,7 @@ def train_default_tree(data_set, target):
     storage.save_to_storage_by_id(tree_grid, model_id)
     return tree_grid
 
-def get_default_tree_metrics(data_set, target):
+def get_default_tree_with_report(data_set, target):
     X, y = __get_X_to_y(data_set, target)
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=TEST_SAMPLES_SIZE)
     tree_grid = tree.get_trained_decision_tree_classifier_search_cv(X_train, y_train)
