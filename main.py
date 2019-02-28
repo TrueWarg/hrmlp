@@ -1,41 +1,39 @@
 import os
-import api.utils as utils 
-import api.static.res as apires
-import api.static.constants as apiconstants
 import mlmethods.training as training
 import prediction.classification as clf
 import validation.featurevalidation as vld
+from api.utils import *
+from api.response import *
+from api.static.constants import *
+from api.static.res import *
 from flask import Flask, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = apiconstants.DEFAULT_UPLOAD_PATH
+app.config[UPLOAD_FOLDER_CONFIG_PARAM] = DEFAULT_UPLOAD_PATH
 
-@app.route('/')
-def test():
-    return "test"
-
+# ------------------------------------------
 # TODO Probably, can't extrat features names from trained model (feature_importances_ get only numbers),
 # so need add name to request body...
 @app.route('/trainedmodel/upload', methods = ['POST'])
 def upload_trained_model():
-    trainedModelFile = request.files['trainedModel']
-    if trainedModelFile and utils.is_allowed_file(trainedModelFile.filename, apiconstants.ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS):
+    trainedModelFile = request.files[UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
+    if trainedModelFile and is_allowed_file(trainedModelFile.filename, ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS):
         filename = secure_filename(trainedModelFile.filename)
         # add generating id and uni filename or let uploaded file 
-        trainedModelFile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return apires.UPLOAD_TRAINED_MODEL_SUCCESS_MESSAGE
-    return apires.UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
+        trainedModelFile.save(os.path.join(app.config[UPLOAD_FOLDER_CONFIG_PARAM], filename))
+        return UPLOAD_TRAINED_MODEL_SUCCESS_MESSAGE
+    return UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
+# ------------------TREE--------------------------
 @app.route('/mlmethods/training/decisiontree', methods = ['POST'])
 def train_decision_tree():
-    data_set = request.files['dataSet']
-    if data_set and utils.is_allowed_file(data_set.filename, apiconstants.ALLOWED_DATA_SET_FILE_EXTENSIONS):
-         # TODO Add validation object features if it needed for client 
-        target = request.form['target']
-        training.default_tree(data_set, target)
-        return 'Success'
-    return 'Error'
+    data_set = request.files[DATA_SET_REQUEST_PARAM]
+    if data_set and is_allowed_file(data_set.filename, ALLOWED_DATA_SET_FILE_EXTENSIONS):
+        target = request.form[TRAINING_TARGET_FEATURE_REQUEST_PARAM]
+        report = training.get_default_tree_with_report(data_set, target)
+        response = classifiaction_metrics_response(report)
+        return response
 
 @app.route('/prediction/decisiontree', methods = ['POST'])
 def decisiontree_predict():
@@ -57,5 +55,12 @@ def decisiontree_predict():
         )
     return "Prediction error"
 
+# -------------------------------------------
+@app.route('/')
+def test():
+    return "test"
+
 if __name__ == '__main__':
     app.run()
+
+
