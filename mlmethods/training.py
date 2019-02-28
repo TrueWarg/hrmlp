@@ -29,15 +29,16 @@ def get_default_tree_with_report(data_set, target):
     tree_grid = tree.get_trained_decision_tree_classifier_search_cv(X_train, y_train)
     y_predicted = tree_grid.predict(X_holdout)
     model_id = 'hrml_test'
-    # TODO need to decide retrain on all data or save model which trained only part...
-    # Probabaly, can use best params from GreedSearchCV and make simple training
-    storage.save_to_storage_by_id(tree_grid, model_id)
+    best_estimator = tree_grid.best_estimator_
+    best_estimator.fit(X, y)
+    storage.save_to_storage_by_id(best_estimator, model_id)
     report = ClassificationReport(
         precision = precision_score(y_train, y_predicted),
         recall = recall_score(y_train, y_predicted),
         f1_score = f1_score(y_train, y_predicted),
         accuracy = accuracy_score(y_train, y_predicted),
-        confusion_matrix = confusion_matrix(y_train, y_predicted))
+        confusion_matrix = confusion_matrix(y_train, y_predicted)
+    )
     return report
 
 def __binarize_object_features(data_frame, target):

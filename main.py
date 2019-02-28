@@ -31,13 +31,8 @@ def train_decision_tree():
     data_set = request.files[DATA_SET_REQUEST_PARAM]
     if data_set and is_allowed_file(data_set.filename, ALLOWED_DATA_SET_FILE_EXTENSIONS):
         target = request.form[TRAINING_TARGET_FEATURE_REQUEST_PARAM]
-        reutrn_metrics = request.form[TRAINING_RETURN_METRICS_REQUEST_PARAM]
-        if (reutrn_metrics == True):
-            report = training.get_default_tree_with_report(data_set, target)
-            response = classifiaction_metrics_response(report)
-        else:
-            training.train_default_tree(data_set, target)
-            response = complete_training_response()
+        report = training.get_default_tree_with_report(data_set, target)
+        response = classifiaction_metrics_response(report)
         return response
 
 @app.route('/prediction/decisiontree', methods = ['POST'])
