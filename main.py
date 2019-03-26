@@ -55,7 +55,8 @@ def decisiontree_predict():
         )
     return "Prediction error"
 
-# -------------------------------------------
+# ----------------KNN-----------------------
+
 @app.route('/')
 def test():
     return "test"
