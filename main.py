@@ -6,7 +6,9 @@ from api.utils import *
 from api.response import *
 from api.static.constants import *
 from api.static.res import *
+from api.reauestprocessing import *
 from flask import Flask, request, redirect, url_for, jsonify
+from mlmethods.decisiontrees import *
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -28,12 +30,8 @@ def upload_trained_model():
 # ------------------TREE--------------------------
 @app.route('/mlmethods/training/decisiontree', methods = ['POST'])
 def train_decision_tree():
-    data_set = request.files[DATA_SET_REQUEST_PARAM]
-    if data_set and is_allowed_file(data_set.filename, ALLOWED_DATA_SET_FILE_EXTENSIONS):
-        target = request.form[TRAINING_TARGET_FEATURE_REQUEST_PARAM]
-        report = training.get_default_tree_with_report(data_set, target)
-        response = classifiaction_metrics_response(report)
-        return response
+    response = process_training_request(request, DefaultDecisionTreeTrainer())
+    return response
 
 @app.route('/prediction/decisiontree', methods = ['POST'])
 def decisiontree_predict():
@@ -54,6 +52,8 @@ def decisiontree_predict():
             leavingProbability = str(proba[0][1])
         )
     return "Prediction error"
+
+# ----------------Forest--------------------
 
 # ----------------KNN-----------------------
 

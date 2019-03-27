@@ -1,37 +1,18 @@
 import pandas as pd
-import mlmethods.randomforest as randomforest 
-import mlmethods.decisiontrees as tree 
 import storage.modelstorage as storage
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 from mlmethods.constatns import TEST_SAMPLES_SIZE
 from mlmethods.entities.metrics import ClassificationReport, ConfusionMatrix
 
-def default_random_forest(data_set, target):
+def process_default_classificator_training(data_set, target, trainer):
     X, y = __get_X_to_y(data_set, target)
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=TEST_SAMPLES_SIZE)
-    forest = randomforest.train_simple_random_forest(X, y)
+    forest = trainer.get_trained_classificator(X, y)
     y_predicted = forest.predict(X_holdout)
     # TODO Add generation uni model id 
     model_id = 'hrml_test'
-    storage.save_to_storage_by_id(random_forest_grid, model_id)
-    report = ClassificationReport(
-        precision = precision_score(y_holdout, y_predicted),
-        recall = recall_score(y_holdout, y_predicted),
-        f1_score = f1_score(y_holdout, y_predicted),
-        accuracy = accuracy_score(y_holdout, y_predicted),
-        confusion_matrix = __convert_confusion_matrix_to_object(confusion_matrix(y_holdout, y_predicted).ravel())
-    )
-    return report
-
-def get_default_tree_with_report(data_set, target):
-    X, y = __get_X_to_y(data_set, target)
-    X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=TEST_SAMPLES_SIZE)
-    tree_grid = tree.get_trained_decision_tree_classifier_search_cv(X_train, y_train)
-    y_predicted = tree_grid.predict(X_holdout)
-    # TODO Add generation uni model id 
-    model_id = 'hrml_test'
-    storage.save_to_storage_by_id(tree_grid, model_id)
+    storage.save_to_storage_by_id(forest, model_id)
     report = ClassificationReport(
         precision = precision_score(y_holdout, y_predicted),
         recall = recall_score(y_holdout, y_predicted),
