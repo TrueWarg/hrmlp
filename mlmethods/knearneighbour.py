@@ -6,7 +6,7 @@ from mlmethods.basetrainers import DefaulTrainer
 import mlmethods.constatns as const
 
 class DefaultKNeighborsTrainer(DefaulTrainer):
-    def get_trained_classificator(self, X_train, y_train):
+    def get_trained_classifier(self, X_train, y_train):
         return self.__get_kneighbors_classifier_search_cv(X_train, y_train)
 
     # this method for default training functionality 

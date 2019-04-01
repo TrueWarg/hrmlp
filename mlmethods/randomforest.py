@@ -4,7 +4,7 @@ from mlmethods.basetrainers import DefaulTrainer
 import mlmethods.constatns as const
 
 class DefaultRandomForestTrainer(DefaulTrainer):
-    def get_trained_classificator(self, X_train, y_train):
+    def get_trained_classifier(self, X_train, y_train):
         return self.__train_simple_random_forest(X_train, y_train)
 
     # this method for default training functionality 

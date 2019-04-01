@@ -63,16 +63,18 @@ def train_random_forest():
 # ----------------KNN-----------------------
 
 @app.route('/mlmethods/training/kneighbors', methods = ['POST'])
-def train_KNeighbors_Trainer():
+def train_KNeighbors():
     response = process_training_request(request, DefaultTrainersFacroty().create_KNeighbors_trainer())
     return response
 
 # ----------------Gradient Boosting----------
-@app.route('/mlmethods/training/kneighbors', methods = ['POST'])
-def train_KNeighbors_Trainer():
-    response = process_training_request(request, DefaultTrainersFacroty().create_KNeighbors_trainer())
+@app.route('/mlmethods/training/gradientboosting', methods = ['POST'])
+def train_gradient_boosting():
+    response = process_training_request(request, DefaultTrainersFacroty().create_gradient_boosting_trainer())
     return response
+#-----------------Logistic Regression--------
 
+#---------------------------------------------
 @app.route('/')
 def test():
     return "test"

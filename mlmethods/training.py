@@ -5,14 +5,15 @@ from sklearn.model_selection import train_test_split
 from mlmethods.constatns import TEST_SAMPLES_SIZE
 from mlmethods.entities.metrics import ClassificationReport, ConfusionMatrix
 
-def process_default_classificator_training(data_set, target, trainer):
+def process_default_classifier_training(data_set, target, trainer):
     X, y = __get_X_to_y(data_set, target)
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=TEST_SAMPLES_SIZE)
-    forest = trainer.get_trained_classificator(X, y)
-    y_predicted = forest.predict(X_holdout)
+    classifier = trainer.get_trained_classifier(X, y)
+    # TODO make wrap for lib classifier, because they can have diffirent methods for predict
+    y_predicted = classifier.predict(X_holdout)
     # TODO Add generation uni model id 
     model_id = 'hrml_test'
-    storage.save_to_storage_by_id(forest, model_id)
+    storage.save_to_storage_by_id(classifier, model_id)
     report = ClassificationReport(
         precision = precision_score(y_holdout, y_predicted),
         recall = recall_score(y_holdout, y_predicted),

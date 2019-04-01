@@ -1,6 +1,7 @@
 from mlmethods.decisiontrees import DefaultDecisionTreeTrainer
 from mlmethods.knearneighbour import DefaultKNeighborsTrainer
 from mlmethods.randomforest import DefaultRandomForestTrainer
+from mlmethods.gradientboosting import DefaultGradientBoostingTrainer
 
 class DefaultTrainersFacroty():
     def create_decision_tree_trainer(self):
@@ -13,5 +14,5 @@ class DefaultTrainersFacroty():
         return DefaultRandomForestTrainer()
 
     def create_gradient_boosting_trainer(self):
-        return 
+        return DefaultGradientBoostingTrainer()
 
