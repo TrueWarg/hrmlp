@@ -4,11 +4,11 @@ from mlmethods.basetrainers import DefaulTrainer
 import mlmethods.constatns as const
 
 class DefaultDecisionTreeTrainer(DefaulTrainer):
-    def get_trained_classificator(self, x_train, y_train):
-        return self.__get_trained_decision_tree_classifier_search_cv(x_train, y_train)
+    def get_trained_classificator(self, X_train, y_train):
+        return self.__get_trained_decision_tree_classifier_search_cv(X_train, y_train)
     
     # this methods for default training functionality 
-    def __get_trained_decision_tree_classifier_search_cv(self, x_train, y_train):
+    def __get_trained_decision_tree_classifier_search_cv(self, X_train, y_train):
         tree_params = {
             const.MAX_DEPTH : range(
                 const.BOTTOM_MAX_DEPTH_VALUE, 
@@ -16,7 +16,7 @@ class DefaultDecisionTreeTrainer(DefaulTrainer):
             ),
             const.MAX_FEATURES : range(
                 const.BOTTOM_MAX_FEATURES_VALUE, 
-                len(x_train.columns)
+                len(X_train.columns)
                 )
             }
         tree_grid=GridSearchCV(
@@ -26,5 +26,5 @@ class DefaultDecisionTreeTrainer(DefaulTrainer):
             n_jobs=const.JOBS_NUMBER,
             scoring=const.GRID_SEARCH_CV_SCORING
         )
-        tree_grid.fit(x_train, y_train)
+        tree_grid.fit(X_train, y_train)
         return tree_grid

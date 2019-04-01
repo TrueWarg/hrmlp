@@ -8,7 +8,7 @@ from api.static.constants import *
 from api.static.res import *
 from api.reauestprocessing import *
 from flask import Flask, request, redirect, url_for, jsonify
-from mlmethods.decisiontrees import *
+from mlmethods.trainersfactories import DefaultTrainersFacroty
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -27,10 +27,10 @@ def upload_trained_model():
         return UPLOAD_TRAINED_MODEL_SUCCESS_MESSAGE
     return UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
-# ------------------TREE--------------------------
+# ------------------Trees--------------------------
 @app.route('/mlmethods/training/decisiontree', methods = ['POST'])
 def train_decision_tree():
-    response = process_training_request(request, DefaultDecisionTreeTrainer())
+    response = process_training_request(request, DefaultTrainersFacroty().create_decision_tree_trainer())
     return response
 
 @app.route('/prediction/decisiontree', methods = ['POST'])
@@ -55,7 +55,23 @@ def decisiontree_predict():
 
 # ----------------Forest--------------------
 
+@app.route('/mlmethods/training/randomforest', methods = ['POST'])
+def train_random_forest():
+    response = process_training_request(request, DefaultTrainersFacroty().create_random_forest_trainer())
+    return response
+
 # ----------------KNN-----------------------
+
+@app.route('/mlmethods/training/kneighbors', methods = ['POST'])
+def train_KNeighbors_Trainer():
+    response = process_training_request(request, DefaultTrainersFacroty().create_KNeighbors_trainer())
+    return response
+
+# ----------------Gradient Boosting----------
+@app.route('/mlmethods/training/kneighbors', methods = ['POST'])
+def train_KNeighbors_Trainer():
+    response = process_training_request(request, DefaultTrainersFacroty().create_KNeighbors_trainer())
+    return response
 
 @app.route('/')
 def test():
