@@ -5,10 +5,10 @@ import xgboost as xgb
 
 class DefaultGradientBoostingTrainer(BaseTrainer):
     def get_trained_classifier(self, X_train, y_train):
-        return self.__train_simple_gradient_boosting(X_train, y_train)
+        return self.__get_trained_simple_gradient_boosting(X_train, y_train)
 
     # this method for default training functionality 
-    def __train_simple_gradient_boosting(self, X_train, y_train):
+    def __get_trained_simple_gradient_boosting(self, X_train, y_train):
         params = {
         const.XGBOOST_HYPER_PARAM_OBJECTIVE : const.XGBOOST_OBJECTIVE_BINARY_LOGISTIC,
         const.MAX_DEPTH : const.MAX_DEPTH_VALUE,
@@ -24,7 +24,7 @@ class DefaultGradientBoostingClassifier(BaseClassifier):
     def __init__(self, params, booster=None):
         self.params = params
         self.booster = booster
-        
+
     def train(self, X_train, y_train):
         self.booster = xgb.train(self.params, xgb.DMatrix(X_train, label=y_train), num_boost_round=const.XGBOOST_NUM_BOOST_ROUND) 
 

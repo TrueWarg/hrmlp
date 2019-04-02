@@ -8,10 +8,10 @@ import mlmethods.constatns as const
 
 class DefaultKNeighborsTrainer(BaseTrainer):
     def get_trained_classifier(self, X_train, y_train):
-        return self.__get_kneighbors_classifier_search_cv(X_train, y_train)
+        return self.__get_trained_kneighbors_classifier_search_cv(X_train, y_train)
 
     # this method for default training functionality 
-    def __get_kneighbors_classifier_search_cv(self, X_train, y_train):
+    def __get_trained_kneighbors_classifier_search_cv(self, X_train, y_train):
         knn_params = {const.KNN_PARAM_NEIGHBORS_COUNT: range(2, 3)}
         knn_pipe = Pipeline([('scaler', StandardScaler()), ('knn', KNeighborsClassifier())])
 

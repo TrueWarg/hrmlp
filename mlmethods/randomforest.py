@@ -6,10 +6,10 @@ import mlmethods.constatns as const
 
 class DefaultRandomForestTrainer(BaseTrainer):
     def get_trained_classifier(self, X_train, y_train):
-        return self.__train_simple_random_forest(X_train, y_train)
+        return self.__get_trained_simple_random_forest(X_train, y_train)
 
     # this method for default training functionality 
-    def __train_simple_random_forest(self, X_train, y_train):
+    def __get_trained_simple_random_forest(self, X_train, y_train):
         forest = RandomForestClassifier(
             n_estimators=const.RANDOM_FOREST_ESTIMATORS_COUNT, 
             max_depth=const.RANDOM_FORES_TOP_MAX_DEPTH_VALUE,

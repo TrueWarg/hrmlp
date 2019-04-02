@@ -72,7 +72,12 @@ def train_KNeighbors():
 def train_gradient_boosting():
     response = process_training_request(request, DefaultTrainersFacroty().create_gradient_boosting_trainer())
     return response
+
 #-----------------Logistic Regression--------
+@app.route('/mlmethods/training/logisticregression', methods = ['POST'])
+def train_logistic_regression():
+    response = process_training_request(request, DefaultTrainersFacroty().create_logistic_regression_trainer())
+    return response
 
 #---------------------------------------------
 @app.route('/')
@@ -81,5 +86,3 @@ def test():
 
 if __name__ == '__main__':
     app.run()
-
-
