@@ -1,9 +1,10 @@
 from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
-from mlmethods.basetrainers import DefaulTrainer
+from mlmethods.basetrainers import BaseTrainer
+from mlmethods.baseclassifiers import BaseClassifier
 import mlmethods.constatns as const
 
-class DefaultDecisionTreeTrainer(DefaulTrainer):
+class DefaultDecisionTreeTrainer(BaseTrainer):
     def get_trained_classifier(self, X_train, y_train):
         return self.__get_trained_decision_tree_classifier_search_cv(X_train, y_train)
     
@@ -19,12 +20,24 @@ class DefaultDecisionTreeTrainer(DefaulTrainer):
                 len(X_train.columns)
                 )
             }
-        tree_grid=GridSearchCV(
+        tree_grid = GridSearchCV(
             estimator=DecisionTreeClassifier(), 
             param_grid=tree_params,
             cv=const.CROSS_VALIDATION_COUNT, 
             n_jobs=const.JOBS_NUMBER,
             scoring=const.GRID_SEARCH_CV_SCORING
         )
-        tree_grid.fit(X_train, y_train)
-        return tree_grid
+        classifier = DefaultDecisionTreeClassifier(tree_grid)
+        classifier.train(X_train, y_train)
+        return classifier
+
+class DefaultDecisionTreeClassifier(BaseClassifier):
+
+    def __init__(self, tree_grid):
+        self.tree_grid = tree_grid
+
+    def train(self, X_train, y_train):
+        self.tree_grid.fit(X_train, y_train)
+
+    def predict(self, X_holdout):
+        return self.tree_grid.predict(X_holdout)

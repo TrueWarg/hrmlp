@@ -6,7 +6,7 @@ from mlmethods.gradientboosting import DefaultGradientBoostingTrainer
 class DefaultTrainersFacroty():
     def create_decision_tree_trainer(self):
         return DefaultDecisionTreeTrainer()
-
+        
     def create_KNeighbors_trainer(self):
         return DefaultKNeighborsTrainer()
 

@@ -1,8 +1,9 @@
-from mlmethods.basetrainers import DefaulTrainer
+from mlmethods.basetrainers import BaseTrainer
+from mlmethods.baseclassifiers import BaseClassifier
 import mlmethods.constatns as const
 import xgboost as xgb
 
-class DefaultGradientBoostingTrainer(DefaulTrainer):
+class DefaultGradientBoostingTrainer(BaseTrainer):
     def get_trained_classifier(self, X_train, y_train):
         return self.__train_simple_gradient_boosting(X_train, y_train)
 
@@ -14,6 +15,20 @@ class DefaultGradientBoostingTrainer(DefaulTrainer):
         const.XGBOOST_HYPER_PARAM_SILENT : const.XGBOOST_SILENT_VALUE,
         const.XGBOOST_HYPER_PARAM_ETA : const.XGBOOST_ETA_VALUE
     }
-        return xgb.train(params, xgb.DMatrix(X_train, label=y_train), num_boost_round=const.XGBOOST_NUM_BOOST_ROUND) 
+        classifier = DefaultGradientBoostingClassifier(params)
+        classifier.train(X_train, y_train)
+        return classifier
+
+class DefaultGradientBoostingClassifier(BaseClassifier):
+
+    def __init__(self, params, booster=None):
+        self.params = params
+        self.booster = booster
+        
+    def train(self, X_train, y_train):
+        self.booster = xgb.train(self.params, xgb.DMatrix(X_train, label=y_train), num_boost_round=const.XGBOOST_NUM_BOOST_ROUND) 
+
+    def predict(self, X_holdout):
+        return self.booster.predict(xgb.DMatrix(X_holdout))
 
         
