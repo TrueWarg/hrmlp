@@ -6,7 +6,9 @@ from api.utils import *
 from api.response import *
 from api.static.constants import *
 from api.static.res import *
+from api.reauestprocessing import *
 from flask import Flask, request, redirect, url_for, jsonify
+from mlmethods.trainersfactories import DefaultTrainersFacroty
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -25,15 +27,11 @@ def upload_trained_model():
         return UPLOAD_TRAINED_MODEL_SUCCESS_MESSAGE
     return UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
-# ------------------TREE--------------------------
+# ------------------Trees--------------------------
 @app.route('/mlmethods/training/decisiontree', methods = ['POST'])
 def train_decision_tree():
-    data_set = request.files[DATA_SET_REQUEST_PARAM]
-    if data_set and is_allowed_file(data_set.filename, ALLOWED_DATA_SET_FILE_EXTENSIONS):
-        target = request.form[TRAINING_TARGET_FEATURE_REQUEST_PARAM]
-        report = training.get_default_tree_with_report(data_set, target)
-        response = classifiaction_metrics_response(report)
-        return response
+    response = process_training_request(request, DefaultTrainersFacroty().create_decision_tree_trainer())
+    return response
 
 @app.route('/prediction/decisiontree', methods = ['POST'])
 def decisiontree_predict():
@@ -55,12 +53,36 @@ def decisiontree_predict():
         )
     return "Prediction error"
 
-# -------------------------------------------
+# ----------------Forest--------------------
+
+@app.route('/mlmethods/training/randomforest', methods = ['POST'])
+def train_random_forest():
+    response = process_training_request(request, DefaultTrainersFacroty().create_random_forest_trainer())
+    return response
+
+# ----------------KNN-----------------------
+
+@app.route('/mlmethods/training/kneighbors', methods = ['POST'])
+def train_KNeighbors():
+    response = process_training_request(request, DefaultTrainersFacroty().create_KNeighbors_trainer())
+    return response
+
+# ----------------Gradient Boosting----------
+@app.route('/mlmethods/training/gradientboosting', methods = ['POST'])
+def train_gradient_boosting():
+    response = process_training_request(request, DefaultTrainersFacroty().create_gradient_boosting_trainer())
+    return response
+
+#-----------------Logistic Regression--------
+@app.route('/mlmethods/training/logisticregression', methods = ['POST'])
+def train_logistic_regression():
+    response = process_training_request(request, DefaultTrainersFacroty().create_logistic_regression_trainer())
+    return response
+
+#---------------------------------------------
 @app.route('/')
 def test():
     return "test"
 
 if __name__ == '__main__':
     app.run()
-
-
