@@ -15,8 +15,6 @@ app = Flask(__name__)
 app.config[UPLOAD_FOLDER_CONFIG_PARAM] = DEFAULT_UPLOAD_PATH
 
 # ------------------------------------------
-# TODO Probably, can't extrat features names from trained model (feature_importances_ get only numbers),
-# so need add name to request body...
 @app.route('/trainedmodel/upload', methods = ['POST'])
 def upload_trained_model():
     trainedModelFile = request.files[UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
