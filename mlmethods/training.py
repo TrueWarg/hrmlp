@@ -8,7 +8,7 @@ from mlmethods.entities.metrics import ClassificationReport, ConfusionMatrix
 def process_default_classifier_training(data_set, target, trainer):
     X, y = __get_X_to_y(data_set, target)
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=TEST_SAMPLES_SIZE)
-    classifier = trainer.get_trained_classifier(X, y)
+    classifier = trainer.get_trained_classifier(X_train, y_train)
     # TODO make wrap for lib classifier, because they can have diffirent methods for predict
     y_predicted = classifier.predict(X_holdout)
     # TODO Add generation uni model id 

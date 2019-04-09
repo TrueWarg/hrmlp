@@ -9,10 +9,16 @@ RETURN_MODEL_ID_REQUEST_PARAM = 'modelId'
 TRAINING_TARGET_FEATURE_REQUEST_PARAM = 'target'
 TRAINING_RETURN_METRICS_REQUEST_PARAM = 'returnMetrics'
 
+# response fields
+CONFUSION_MATRINX_TNR = 'trueNegative'
+CONFUSION_MATRINX_FPR = 'falsePositive'
+CONFUSION_MATRINX_FNR = 'falseNegative'
+CONFUSION_MATRINX_TPR = 'truePositive'
 
 # misc
 UPLOAD_FOLDER_CONFIG_PARAM = 'UPLOAD_FOLDER'
 
 # testing dirictory 
 DEFAULT_UPLOAD_PATH = 'D:\\trainedmodels'
+
 

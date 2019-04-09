@@ -1,27 +1,26 @@
 import os
 import mlmethods.training as training
 import prediction.classification as clf
+import api.static.constants as const
 from api.utils import *
-from api.response import *
-from api.static.constants import *
 from api.static.res import *
-from api.reauestprocessing import *
+from api.reauestprocessing import process_training_request
 from flask import Flask, request, redirect, url_for, jsonify
 from mlmethods.trainersfactories import DefaultTrainersFacroty
 from werkzeug.utils import secure_filename
 from storage.database import db_session
 
 app = Flask(__name__)
-app.config[UPLOAD_FOLDER_CONFIG_PARAM] = DEFAULT_UPLOAD_PATH
+app.config[const.UPLOAD_FOLDER_CONFIG_PARAM] = const.DEFAULT_UPLOAD_PATH
 
 # ------------------------------------------
 @app.route('/trainedmodel/upload', methods = ['POST'])
 def upload_trained_model():
-    trainedModelFile = request.files[UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
-    if trainedModelFile and is_allowed_file(trainedModelFile.filename, ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS):
+    trainedModelFile = request.files[const.UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
+    if trainedModelFile and is_allowed_file(trainedModelFile.filename, const.ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS):
         filename = secure_filename(trainedModelFile.filename)
         # add generating id and uni filename or let uploaded file 
-        trainedModelFile.save(os.path.join(app.config[UPLOAD_FOLDER_CONFIG_PARAM], filename))
+        trainedModelFile.save(os.path.join(app.config[const.UPLOAD_FOLDER_CONFIG_PARAM], filename))
         return UPLOAD_TRAINED_MODEL_SUCCESS_MESSAGE
     return UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
@@ -84,7 +83,6 @@ def test():
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     db_session.remove()
-
 
 if __name__ == '__main__':
     app.run()
