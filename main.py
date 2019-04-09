@@ -1,7 +1,6 @@
 import os
 import mlmethods.training as training
 import prediction.classification as clf
-import validation.featurevalidation as vld
 from api.utils import *
 from api.response import *
 from api.static.constants import *
@@ -10,6 +9,7 @@ from api.reauestprocessing import *
 from flask import Flask, request, redirect, url_for, jsonify
 from mlmethods.trainersfactories import DefaultTrainersFacroty
 from werkzeug.utils import secure_filename
+from storage.database import db_session
 
 app = Flask(__name__)
 app.config[UPLOAD_FOLDER_CONFIG_PARAM] = DEFAULT_UPLOAD_PATH
@@ -43,12 +43,11 @@ def decisiontree_predict():
         'Work_accident' : [request.form['Work_accident']],
         'promotion_last_5years' : [request.form['promotion_last_5years']]
     }
-    if vld.validate_featues(features):
-        class_, proba = clf.get_prediction(features)
-        return jsonify(
-            willLeave = str(class_[0] == 1),
-            leavingProbability = str(proba[0][1])
-        )
+    class_, proba = clf.get_prediction(features)
+    return jsonify(
+        willLeave = str(class_[0] == 1),
+        leavingProbability = str(proba[0][1])
+    )
     return "Prediction error"
 
 # ----------------Forest--------------------
@@ -81,6 +80,11 @@ def train_logistic_regression():
 @app.route('/')
 def test():
     return "test"
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
+
 
 if __name__ == '__main__':
     app.run()

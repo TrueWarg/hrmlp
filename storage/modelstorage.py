@@ -18,7 +18,7 @@ def get_from_storage_by_file_name(filename):
 
 def __get_file_name__(variable_part):
     return __DEFAULT_PATH  + str(variable_part) + __FILE_EXTENSION
-
+    
 __TRAINED_MODEL_FILE_NAME_PREFIX = 'trained_model'
 __FILE_EXTENSION = '.joblib'
 # testing dirictory 
