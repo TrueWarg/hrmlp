@@ -1,5 +1,5 @@
 import pandas as pd
-import storage.modelstorage as storage
+from storage.trainedmodelstorage import TraindedModelStorage
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 from mlmethods.constatns import TEST_SAMPLES_SIZE
@@ -11,9 +11,8 @@ def process_default_classifier_training(data_set, target, trainer):
     classifier = trainer.get_trained_classifier(X_train, y_train)
     # TODO make wrap for lib classifier, because they can have diffirent methods for predict
     y_predicted = classifier.predict(X_holdout)
-    # TODO Add generation uni model id 
-    model_id = 'hrml_test'
-    storage.save_to_storage_by_id(classifier, model_id)
+    storage = TraindedModelStorage()
+    storage.save_trained_model(classifier)
     report = ClassificationReport(
         precision = precision_score(y_holdout, y_predicted),
         recall = recall_score(y_holdout, y_predicted),

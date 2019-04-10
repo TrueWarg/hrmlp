@@ -3,12 +3,13 @@ import mlmethods.training as training
 import prediction.classification as clf
 import api.static.constants as const
 from api.utils import *
-from api.static.res import *
+from api.static.res import UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 from api.reauestprocessing import process_training_request
 from flask import Flask, request, redirect, url_for, jsonify
 from mlmethods.trainersfactories import DefaultTrainersFacroty
 from werkzeug.utils import secure_filename
-from storage.database import db_session
+from storage.database import db_session, init_db
+from storage.trainedmodelstorage import save_trained_model
 
 app = Flask(__name__)
 app.config[const.UPLOAD_FOLDER_CONFIG_PARAM] = const.DEFAULT_UPLOAD_PATH
@@ -16,12 +17,12 @@ app.config[const.UPLOAD_FOLDER_CONFIG_PARAM] = const.DEFAULT_UPLOAD_PATH
 # ------------------------------------------
 @app.route('/trainedmodel/upload', methods = ['POST'])
 def upload_trained_model():
-    trainedModelFile = request.files[const.UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
-    if trainedModelFile and is_allowed_file(trainedModelFile.filename, const.ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS):
-        filename = secure_filename(trainedModelFile.filename)
-        # add generating id and uni filename or let uploaded file 
-        trainedModelFile.save(os.path.join(app.config[const.UPLOAD_FOLDER_CONFIG_PARAM], filename))
-        return UPLOAD_TRAINED_MODEL_SUCCESS_MESSAGE
+    trained_model_file = request.files[const.UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
+    if trained_model_file and is_allowed_file(trained_model_file.filename, const.ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS):
+        #filename = secure_filename(trained_model_file.filename)
+        # trainedModelFile.save(os.path.join(app.config[const.UPLOAD_FOLDER_CONFIG_PARAM], filename))
+        generated_id = save_trained_model(trained_model_file)
+        return generated_id
     return UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
 # ------------------Trees--------------------------
@@ -86,3 +87,4 @@ def shutdown_session(exception=None):
 
 if __name__ == '__main__':
     app.run()
+    init_db()
