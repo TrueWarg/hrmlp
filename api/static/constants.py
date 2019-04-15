@@ -15,10 +15,11 @@ CONFUSION_MATRINX_FPR = 'falsePositive'
 CONFUSION_MATRINX_FNR = 'falseNegative'
 CONFUSION_MATRINX_TPR = 'truePositive'
 
-# misc
+# config
 UPLOAD_FOLDER_CONFIG_PARAM = 'UPLOAD_FOLDER'
+SQLALCHEMY_DATABASE_URI_CONFIG_PARAM = 'SQLALCHEMY_DATABASE_URI'
 
 # testing dirictory 
 DEFAULT_UPLOAD_PATH = 'D:\\trainedmodels'
-
+DEFAULT_DB_DIRICTORY = 'sqlite:///D:\\trainedmodels\\hrmlp.db'
 

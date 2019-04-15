@@ -1,17 +1,29 @@
 from joblib import dump, load
-from storage.dbwokrhelpers import TrainedModelDbWorkHelper
+from storage.models.trainedmodels import TrainedModelDb
+from storage.database import db
 # TODO need safeful method save model in db
 
 class TraindedModelStorage:
-    def save_trained_model_file(self, trained_model_file):
-        db_helper = TrainedModelDbWorkHelper()
+    
+    def save_trained_model(self, model_name, filepath, user_id):
         generated_id = "id333"
-        db_helper.insert_or_replace(generated_id, trained_model_file)
+        model_db = TrainedModelDb(
+            id = generated_id,
+            name = model_name,
+            filepath = filepath,
+            user_id = user_id
+        )
+        session = db.session()
+        session.add(model_db)
+        session.commit()
         return generated_id
         
     def delete_trained_model(self, model_id):
-        db_helper = TrainedModelDbWorkHelper()
-        db_helper.delete_by_id(model_id)
+        return TrainedModelDb.query.filter(TrainedModelDb.id == model_id).delete()
+
+    def get_all_by_user_id(self, user_id):
+        return TrainedModelDb.query.filter(TrainedModelDb.id == user_id).all()
+
 
 
 def save_to_storage_by_id(model_id, trained_model):

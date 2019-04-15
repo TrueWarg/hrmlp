@@ -1,11 +1,15 @@
 from sqlalchemy import Column, String, Binary
-from storage.database import Base
+from storage.database import db
 
-class TrainedModel(Base):
+class TrainedModelDb(db.Model):
     __tablename__="trained_models"
-    id = Column(String(60), primary_key=True)
-    binary_form = Column(Binary)
+    id = Column(String(100), primary_key=True)
+    name = Column(String(100))
+    filepath = Column(String(100), unique=True)
+    user_id = Column(String(100), unique=True)
 
-    def __init__(self, id, binary_form):
+    def __init__(self, id, name, filepath, user_id):
         self.id = id
-        self.binary_form = binary_form
+        self.name = name
+        self.filepath = filepath
+        self.user_id = user_id
