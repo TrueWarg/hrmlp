@@ -8,8 +8,10 @@ from api.reauestprocessing import process_training_request
 from flask import Flask, request, redirect, url_for, jsonify
 from mlmethods.trainersfactories import DefaultTrainersFacroty
 from werkzeug.utils import secure_filename
-from storage.trainedmodelstorage import TraindedModelStorage
+from storage.models.trainedmodels import TrainedModelDb
 from storage.database import init_db
+from storage.trainedmodelstorage import TraindedModelStorage, convert_id_to_file_path
+import uuid
 
 app = Flask(__name__)
 app.config[const.UPLOAD_FOLDER_CONFIG_PARAM] = const.DEFAULT_UPLOAD_PATH
@@ -22,10 +24,14 @@ with app.app_context():
 @app.route('/trainedmodel/upload', methods = ['POST'])
 def upload_trained_model():
     trained_model_file = request.files[const.UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
+    trained_model_name = request.form[const.UPLOAD_TRAINED_MODEL_NAME_REQUEST_PARAM]
     if trained_model_file and is_allowed_file(trained_model_file.filename, const.ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS):
-        #filename = secure_filename(trained_model_file.filename)
-        # trainedModelFile.save(os.path.join(app.config[const.UPLOAD_FOLDER_CONFIG_PARAM], filename))
-        generated_id = ""
+        storage = TraindedModelStorage()
+        generated_id = str(uuid.uuid4())
+        filepath = convert_id_to_file_path(generated_id)
+        model_db = TrainedModelDb(generated_id, trained_model_name, filepath, user_id='admin')
+        storage.save_trained_model(model_db)
+        trained_model_file.save(os.path.join(app.config[const.UPLOAD_FOLDER_CONFIG_PARAM], filepath))
         return generated_id
     return UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
@@ -64,8 +70,7 @@ def train_logistic_regression():
 #---------------------------------------------
 @app.route('/')
 def test():
-    return str(TraindedModelStorage().get_all_by_user_id("admin"))
+    return str(TraindedModelStorage().get_all_by_user_id('kek'))
 
 if __name__ == '__main__':
     app.run()
-

@@ -1,22 +1,24 @@
 import pandas as pd
-from storage.trainedmodelstorage import TraindedModelStorage
+from storage.trainedmodelstorage import TraindedModelStorage, convert_id_to_file_path
+from storage.models.trainedmodels import TrainedModelDb
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 from mlmethods.constatns import TEST_SAMPLES_SIZE
 from mlmethods.entities.metrics import ClassificationReport, ConfusionMatrix
+import uuid
 
 def process_default_classifier_training(data_set, target, trainer):
-    storage = TraindedModelStorage()
-    storage.save_trained_model("lalka", "suka", "admin")
-
     X, y = __get_X_to_y(data_set, target)
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=TEST_SAMPLES_SIZE)
     classifier = trainer.get_trained_classifier(X_train, y_train)
     # TODO make wrap for lib classifier, because they can have diffirent methods for predict
     y_predicted = classifier.predict(X_holdout)
-    # storage = TraindedModelStorage()
-    # storage.save_trained_model(classifier)
-    # storage.save_trained_model("lalka", "suka", "admin")
+    generated_id = str(uuid.uuid4())
+    storage = TraindedModelStorage()
+    filepath = convert_id_to_file_path(generated_id)
+    model_db = TrainedModelDb(generated_id, str(classifier), filepath, user_id='kek')
+    storage.save_trained_model_as_file(classifier, filepath)
+    storage.save_trained_model(model_db)
     report = ClassificationReport(
         precision = precision_score(y_holdout, y_predicted),
         recall = recall_score(y_holdout, y_predicted),

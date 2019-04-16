@@ -6,7 +6,7 @@ class TrainedModelDb(db.Model):
     id = Column(String(100), primary_key=True)
     name = Column(String(100))
     filepath = Column(String(100), unique=True)
-    user_id = Column(String(100), unique=True)
+    user_id = Column(String(100))
 
     def __init__(self, id, name, filepath, user_id):
         self.id = id
