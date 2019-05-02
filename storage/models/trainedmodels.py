@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Binary
+from sqlalchemy import Column, String
 from storage.database import db
 
 class TrainedModelDb(db.Model):
