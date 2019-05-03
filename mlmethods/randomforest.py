@@ -16,17 +16,16 @@ class DefaultRandomForestTrainer(BaseTrainer):
             n_jobs=const.JOBS_NUMBER,
             oob_score=const.RANDOM_FOREST_OOB_SCORE
         )
-        classifier = DefaultKNeighborsClassifier(forest)
+        classifier = DefaultRandomForestClassifier(forest)
         classifier.train(X_train, y_train)
         return classifier
 
-class DefaultKNeighborsClassifier(BaseClassifier):
-
+class DefaultRandomForestClassifier(BaseClassifier):
     def __init__(self, forest):
-        self.forest = forest
+        self.child_classifier = forest
 
     def train(self, X_train, y_train):
-        self.forest.fit(X_train, y_train)
+        self.child_classifier.fit(X_train, y_train)
 
     def predict(self, X_holdout):
-        return self.forest.predict(X_holdout)
+        return self.child_classifier.predict(X_holdout)

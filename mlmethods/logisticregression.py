@@ -24,12 +24,11 @@ class DefaultLogisticRegressionTrainer(BaseTrainer):
         return classifier
 
 class DefaultLogistiRegressionClassifier(BaseClassifier):
-
     def __init__(self, logistic_regression_grid):
-        self.logistic_regression_grid = logistic_regression_grid
+        self.child_classifier = logistic_regression_grid
 
     def train(self, X_train, y_train):
-        self.logistic_regression_grid.fit(X_train, y_train)
+        self.child_classifier.fit(X_train, y_train)
 
     def predict(self, X_holdout):
-        return self.logistic_regression_grid.predict(X_holdout)
+        return self.child_classifier.predict(X_holdout)

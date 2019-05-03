@@ -19,4 +19,3 @@ class DefaultTrainersFacroty():
 
     def create_logistic_regression_trainer(self):
         return DefaultLogisticRegressionTrainer()
-        

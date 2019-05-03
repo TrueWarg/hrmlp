@@ -26,12 +26,11 @@ class DefaultKNeighborsTrainer(BaseTrainer):
         return classifier
 
 class DefaultKNeighborsClassifier(BaseClassifier):
-
     def __init__(self, knn_grid):
-        self.knn_grid = knn_grid
+        self.child_classifier = knn_grid
 
     def train(self, X_train, y_train):
-        self.knn_grid.fit(X_train, y_train)
+        self.child_classifier.fit(X_train, y_train)
 
     def predict(self, X_holdout):
-        return self.knn_grid.predict(X_holdout)
+        return self.child_classifier.predict(X_holdout)

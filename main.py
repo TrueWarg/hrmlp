@@ -31,7 +31,6 @@ def upload_trained_model():
         and field_values_file \
         and is_allowed_file(trained_model_file.filename, const.ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS) \
         and is_allowed_file(field_values_file.filename, const.ALLOWED_FIELD_VALUES_FILE_EXTENSIONS):
-        
         model_storage = TraindedModelStorage()
         feature_names_storage = FeatureNamesStorage()
         generated_id = str(uuid.uuid4())
@@ -90,7 +89,7 @@ def get_prediction():
 
 @app.route('/')
 def test():
-    return str(TraindedModelStorage().get_all_by_user_id('admin'))
+    return str(list(map(lambda item: str(item.name) + " "  + str(item.id), TraindedModelStorage().get_all_by_user_id('lek'))))
 
 if __name__ == '__main__':
     app.run()

@@ -3,7 +3,6 @@ from storage.models.trainedmodels import TrainedModelDb
 from storage.database import db
 
 class TraindedModelStorage:
-    
     def save_trained_model(self, model_db):
         session = db.session()
         session.add(model_db)
@@ -23,15 +22,6 @@ class TraindedModelStorage:
         return TrainedModelDb.query.filter(TrainedModelDb.user_id == user_id).all()
 
 # Utils     
-def get_from_storage_by_id(model_id):
-    filename = " __get_file_name__(model_id)"
-    load_result = load(filename) 
-    return load_result
-
-def get_from_storage_by_file_name(filename):
-    load_result = load(filename)
-    return load_result
-
 # Now only windows test and 
 # TODO make segmentation '-' replace on '\\'
 def convert_id_to_file_path(id):

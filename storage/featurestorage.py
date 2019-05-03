@@ -3,7 +3,6 @@ from storage.database import db
 import pandas as pd
 
 class FeatureNamesStorage:
-    
     def save_feature_names(self, feature_names, model_id):
         session = db.session()
         for index, name in enumerate(feature_names):
