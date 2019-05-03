@@ -23,7 +23,11 @@ def process_default_classifier_training(data_set, target, trainer):
     trained_model_storage.save_trained_model(model_db)
     formatted_names = list(map(lambda feature_name: feature_name.lower().replace(' ', ''), X.columns))
     feature_names_storage.save_feature_names(formatted_names, generated_id)
+
     # some classifier return real numbers
+    
+    print("!!! " + str(classifier.predict(X)))
+
     y_predicted_int = list(map(lambda number: int(round(number)), y_predicted))
     report = ClassificationReport(
         precision = precision_score(y_holdout, y_predicted_int),
