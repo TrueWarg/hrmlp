@@ -1,30 +1,45 @@
 import os
 import mlmethods.training as training
-import prediction.classification as clf
-import validation.featurevalidation as vld
+import api.static.constants as const
+from prediction.predictortors import Predictor
 from api.utils import *
-from api.response import *
-from api.static.constants import *
-from api.static.res import *
-from api.reauestprocessing import *
+from api.static.res import UPLOAD_TRAINED_MODEL_ERROR_MESSAGE, UPLOAD_FIELD_VALUES_ERROE_MESSAGE
+from api.reauestprocessing import process_training_request
 from flask import Flask, request, redirect, url_for, jsonify
 from mlmethods.trainersfactories import DefaultTrainersFacroty
 from werkzeug.utils import secure_filename
+from storage.models.trainedmodels import TrainedModelDb
+from storage.database import init_db
+from storage.trainedmodelstorage import TraindedModelStorage, convert_id_to_file_path
+from storage.featurestorage import FeatureNamesStorage, extract_feature_names
+import uuid
 
 app = Flask(__name__)
-app.config[UPLOAD_FOLDER_CONFIG_PARAM] = DEFAULT_UPLOAD_PATH
+app.config[const.UPLOAD_FOLDER_CONFIG_PARAM] = const.DEFAULT_UPLOAD_PATH
+app.config[const.SQLALCHEMY_DATABASE_URI_CONFIG_PARAM] = const.DEFAULT_DB_DIRICTORY
+
+with app.app_context():
+    init_db(app)
 
 # ------------------------------------------
-# TODO Probably, can't extrat features names from trained model (feature_importances_ get only numbers),
-# so need add name to request body...
 @app.route('/trainedmodel/upload', methods = ['POST'])
 def upload_trained_model():
-    trainedModelFile = request.files[UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
-    if trainedModelFile and is_allowed_file(trainedModelFile.filename, ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS):
-        filename = secure_filename(trainedModelFile.filename)
-        # add generating id and uni filename or let uploaded file 
-        trainedModelFile.save(os.path.join(app.config[UPLOAD_FOLDER_CONFIG_PARAM], filename))
-        return UPLOAD_TRAINED_MODEL_SUCCESS_MESSAGE
+    trained_model_file = request.files[const.UPLOAD_TRAINED_MODEL_REQUEST_PARAM]
+    trained_model_name = request.form[const.UPLOAD_TRAINED_MODEL_NAME_REQUEST_PARAM]
+    field_values_file = request.files[const.FIELD_VALUES_REQUEST_PARAMS]
+    if trained_model_file \
+        and field_values_file \
+        and is_allowed_file(trained_model_file.filename, const.ALLOWED_TRAINED_MODEL_FILE_EXTENSIONS) \
+        and is_allowed_file(field_values_file.filename, const.ALLOWED_FIELD_VALUES_FILE_EXTENSIONS):
+        model_storage = TraindedModelStorage()
+        feature_names_storage = FeatureNamesStorage()
+        generated_id = str(uuid.uuid4())
+        filepath = convert_id_to_file_path(generated_id)
+        model_db = TrainedModelDb(generated_id, trained_model_name, filepath, user_id='admin')
+        model_storage.save_trained_model(model_db)
+        trained_model_file.save(os.path.join(app.config[const.UPLOAD_FOLDER_CONFIG_PARAM], filepath))
+        feature_names_storage.save_feature_names(extract_feature_names(field_values_file), generated_id)
+        return generated_id
     return UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
 # ------------------Trees--------------------------
@@ -32,26 +47,6 @@ def upload_trained_model():
 def train_decision_tree():
     response = process_training_request(request, DefaultTrainersFacroty().create_decision_tree_trainer())
     return response
-
-@app.route('/prediction/decisiontree', methods = ['POST'])
-def decisiontree_predict():
-    # TODO make common solution (f.e. array) 
-    features = {
-        'satisfaction_level' : [request.form['satisfaction_level']],      
-        'last_evaluation' : [request.form['last_evaluation']],
-        'number_project' : [request.form['number_project']],
-        'average_montly_hours' : [request.form['average_montly_hours']],
-        'time_spend_company' : [request.form['time_spend_company']],
-        'Work_accident' : [request.form['Work_accident']],
-        'promotion_last_5years' : [request.form['promotion_last_5years']]
-    }
-    if vld.validate_featues(features):
-        class_, proba = clf.get_prediction(features)
-        return jsonify(
-            willLeave = str(class_[0] == 1),
-            leavingProbability = str(proba[0][1])
-        )
-    return "Prediction error"
 
 # ----------------Forest--------------------
 
@@ -79,10 +74,22 @@ def train_logistic_regression():
     response = process_training_request(request, DefaultTrainersFacroty().create_logistic_regression_trainer())
     return response
 
-#---------------------------------------------
+#-----------------Getting Prediction----------------------------
+@app.route('/trainedmodel/prediction', methods=['POST'])
+def get_prediction():
+    field_values_file = request.files[const.FIELD_VALUES_REQUEST_PARAMS]
+    trained_model_id = request.form[const.MODEL_ID_REQUEST_PARAM]
+    if field_values_file and \
+    is_allowed_file(field_values_file.filename, const.ALLOWED_FIELD_VALUES_FILE_EXTENSIONS):
+        predictor = Predictor()
+        return str(list(map(lambda n: n.name, FeatureNamesStorage().get_feture_names_by_model_id(trained_model_id))))
+    return UPLOAD_FIELD_VALUES_ERROE_MESSAGE
+
+#---------------------------------------------------------------
+
 @app.route('/')
 def test():
-    return "test"
+    return str(list(map(lambda item: str(item.name) + " "  + str(item.id), TraindedModelStorage().get_all_by_user_id('lek'))))
 
 if __name__ == '__main__':
     app.run()

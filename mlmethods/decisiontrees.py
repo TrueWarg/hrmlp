@@ -32,12 +32,11 @@ class DefaultDecisionTreeTrainer(BaseTrainer):
         return classifier
 
 class DefaultDecisionTreeClassifier(BaseClassifier):
-
     def __init__(self, tree_grid):
-        self.tree_grid = tree_grid
+        self.child_classifier = tree_grid
 
     def train(self, X_train, y_train):
-        self.tree_grid.fit(X_train, y_train)
+        self.child_classifier.fit(X_train, y_train)
 
     def predict(self, X_holdout):
-        return self.tree_grid.predict(X_holdout)
+        return self.child_classifier.predict(X_holdout)

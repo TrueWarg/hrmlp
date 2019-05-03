@@ -20,15 +20,14 @@ class DefaultGradientBoostingTrainer(BaseTrainer):
         return classifier
 
 class DefaultGradientBoostingClassifier(BaseClassifier):
-
     def __init__(self, params, booster=None):
         self.params = params
-        self.booster = booster
+        self.child_classifier = booster
 
     def train(self, X_train, y_train):
-        self.booster = xgb.train(self.params, xgb.DMatrix(X_train, label=y_train), num_boost_round=const.XGBOOST_NUM_BOOST_ROUND) 
+        self.child_classifier = xgb.train(self.params, xgb.DMatrix(X_train, label=y_train), num_boost_round=const.XGBOOST_NUM_BOOST_ROUND) 
 
     def predict(self, X_holdout):
-        return self.booster.predict(xgb.DMatrix(X_holdout))
+        return self.child_classifier.predict(xgb.DMatrix(X_holdout))
 
         

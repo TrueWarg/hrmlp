@@ -1,25 +1,36 @@
 import pandas as pd
-import storage.modelstorage as storage
+from storage.trainedmodelstorage import TraindedModelStorage, convert_id_to_file_path
+from storage.featurestorage import FeatureNamesStorage
+from storage.models.trainedmodels import TrainedModelDb
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 from mlmethods.constatns import TEST_SAMPLES_SIZE
 from mlmethods.entities.metrics import ClassificationReport, ConfusionMatrix
+import uuid
 
 def process_default_classifier_training(data_set, target, trainer):
     X, y = __get_X_to_y(data_set, target)
     X_train, X_holdout, y_train, y_holdout = train_test_split(X, y, test_size=TEST_SAMPLES_SIZE)
-    classifier = trainer.get_trained_classifier(X, y)
-    # TODO make wrap for lib classifier, because they can have diffirent methods for predict
+    classifier = trainer.get_trained_classifier(X_train, y_train)
     y_predicted = classifier.predict(X_holdout)
-    # TODO Add generation uni model id 
-    model_id = 'hrml_test'
-    storage.save_to_storage_by_id(classifier, model_id)
+    generated_id = str(uuid.uuid4())
+    trained_model_storage = TraindedModelStorage()
+    feature_names_storage = FeatureNamesStorage()
+    filepath = convert_id_to_file_path(generated_id)
+    # TODO make method for name gen
+    model_db = TrainedModelDb(generated_id, str(classifier), filepath, user_id='lek')
+    trained_model_storage.save_trained_model_as_file(classifier.child_classifier, filepath)
+    trained_model_storage.save_trained_model(model_db)
+    formatted_names = list(map(lambda feature_name: feature_name.lower().replace(' ', ''), X.columns))
+    feature_names_storage.save_feature_names(formatted_names, generated_id)
+    # some classifier return real numbers
+    y_predicted_int = list(map(lambda number: int(round(number)), y_predicted))
     report = ClassificationReport(
-        precision = precision_score(y_holdout, y_predicted),
-        recall = recall_score(y_holdout, y_predicted),
-        f1_score = f1_score(y_holdout, y_predicted),
-        accuracy = accuracy_score(y_holdout, y_predicted),
-        confusion_matrix = __convert_confusion_matrix_to_object(confusion_matrix(y_holdout, y_predicted).ravel())
+        precision = precision_score(y_holdout, y_predicted_int),
+        recall = recall_score(y_holdout, y_predicted_int),
+        f1_score = f1_score(y_holdout, y_predicted_int),
+        accuracy = accuracy_score(y_holdout, y_predicted_int),
+        confusion_matrix = __convert_confusion_matrix_to_object(confusion_matrix(y_holdout, y_predicted_int).ravel())
     )
     return report
 

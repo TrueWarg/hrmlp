@@ -1,4 +1,5 @@
 from flask import jsonify
+from api.static.constants import CONFUSION_MATRINX_TNR, CONFUSION_MATRINX_FPR, CONFUSION_MATRINX_FNR, CONFUSION_MATRINX_TPR 
 
 def classifiaction_metrics_response(report):
     return jsonify(
@@ -16,8 +17,8 @@ def complete_training_response():
 
 def serialize_confusion_matrix(confusion_matrix):
     return {
-        'trueNegative' : int(confusion_matrix.true_negative),
-        'falsePositive' : int(confusion_matrix.false_positive),
-        'falseNegative' : int(confusion_matrix.false_negative),
-        'truePositive' : int(confusion_matrix.true_positive)
+        CONFUSION_MATRINX_TNR : int(confusion_matrix.true_negative),
+        CONFUSION_MATRINX_FPR : int(confusion_matrix.false_positive),
+        CONFUSION_MATRINX_FNR : int(confusion_matrix.false_negative),
+        CONFUSION_MATRINX_TPR : int(confusion_matrix.true_positive)
     }
