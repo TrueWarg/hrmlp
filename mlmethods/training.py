@@ -21,11 +21,11 @@ def process_default_classifier_training(data_set, target, trainer):
     model_db = TrainedModelDb(generated_id, str(classifier), filepath, user_id='lek')
     trained_model_storage.save_trained_model_as_file(classifier.child_classifier, filepath)
     trained_model_storage.save_trained_model(model_db)
-    formatted_names = list(map(lambda feature_name: feature_name.lower().replace(' ', ''), X.columns))
-    feature_names_storage.save_feature_names(formatted_names, generated_id)
+    feature_names_storage.save_feature_names(X.columns, generated_id)
 
     # some classifier return real numbers
     
+    print("$$%77" + str(X.head()))
     print("!!! " + str(classifier.predict(X)))
 
     y_predicted_int = list(map(lambda number: int(round(number)), y_predicted))
@@ -39,17 +39,20 @@ def process_default_classifier_training(data_set, target, trainer):
     return report
 
 def __binarize_object_features(data_frame, target):
-    data_frame_dummies = pd.get_dummies(data_frame, columns=data_frame.columns[data_frame.dtypes == 'object']).drop(target, axis=1)
-    return data_frame_dummies
+    df_dummies = pd.get_dummies(data_frame, columns=data_frame.columns[data_frame.dtypes == 'object']).drop(target, axis=1)
+    df_dummies.columns = [column_name.lower().replace(' ', '') for column_name in df_dummies.columns] 
+    return df_dummies
 
 def __drop_object_features(data_frame, target):
     data_frame.drop(target, axis=1, inplace=True)
-    return data_frame.drop(data_frame.columns[data_frame.dtypes == 'object'], axis=1)
+    data_frame.drop(data_frame.columns[data_frame.dtypes == 'object'], axis=1, inplace=True)
+    data_frame.columns = [column_name.lower().replace(' ', '') for column_name in data_frame.columns] 
+    return data_frame
 
 def __get_X_to_y(data_set, target):
     df = pd.read_csv(data_set)
     y = df[target]
-    X = __binarize_object_features(df, target)
+    X = __drop_object_features(df, target)
     return X, y
 
 def __convert_confusion_matrix_to_object(confusion_matrix_list):

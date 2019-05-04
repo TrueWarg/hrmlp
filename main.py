@@ -82,7 +82,9 @@ def get_prediction():
     if field_values_file and \
     is_allowed_file(field_values_file.filename, const.ALLOWED_FIELD_VALUES_FILE_EXTENSIONS):
         predictor = Predictor()
-        return str(list(map(lambda n: n.name, FeatureNamesStorage().get_feture_names_by_model_id(trained_model_id))))
+        print("kek" + str(predictor.get_prediction(field_values_file, trained_model_id)))
+        return "Lek"
+        # return str(list(map(lambda n: n.name, FeatureNamesStorage().get_feture_names_by_model_id(trained_model_id))))
     return UPLOAD_FIELD_VALUES_ERROE_MESSAGE
 
 #---------------------------------------------------------------

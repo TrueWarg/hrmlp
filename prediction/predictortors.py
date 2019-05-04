@@ -7,18 +7,12 @@ from sklearn.linear_model import LogisticRegressionCV
 import xgboost as xgb
 import pandas as pd
 
-def get_prediction(filled_form, model_id = 'hrml_test'):
-    X = pd.DataFrame.from_dict(filled_form)
-    model = storage.get_from_storage_by_id(model_id)
-    class_ = model.predict(X)
-    proba = model.predict_proba(X)
-    return class_, proba
-
 class Predictor:
     def get_prediction(self, values_file, model_id):
         trained_model_storage = TraindedModelStorage()
-        feature_name_storage = FeatureNamesStorage()
+        X = self.__get_ordered_samples(values_file, model_id)
         trained_model_object = trained_model_storage.get_trained_model_object(model_id)
+        self.__predict(trained_model_object, X)
 
 # It's very specific method for getting prediction of object from extra libraries 
 # (f.e. xgboost, skikit-learn). Can remove it, but then will be necessary 
@@ -32,9 +26,18 @@ class Predictor:
             values_to_proba = list(zip(list(map(lambda item: int(round(item)), predicted)), predicted))
         else:
             raise Exception("Unknown extra predictor's class")
+        print("%%%%" + str(values_to_proba))
         return values_to_proba
-
 
     def __get_ordered_samples(self, values_file, model_id):
         df = pd.read_csv(values_file)
-        df_dummies = pd.get_dummies(df, columns=df.columns[df.dtypes == 'object'])
+        feature_names_storge = FeatureNamesStorage()
+        feature_names = list(map(lambda db_item: db_item.name, feature_names_storge.get_feture_names_by_model_id(model_id)))
+        df.drop(df.columns[df.dtypes == 'object'], axis=1, inplace=True)
+        df.columns = [column_name.lower().replace(' ', '') for column_name in df.columns] 
+        # TODO no need to organize each time, it is better to check on difference 
+        # between received columns names and sotred feature names 
+        # in addition, some category feature will be reduced, bacause while trining
+        # there are all values, but not for prediction
+        ordered = df[feature_names]
+        return ordered
