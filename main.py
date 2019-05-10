@@ -5,6 +5,7 @@ from prediction.predictortors import Predictor
 from api.utils import *
 from api.static.res import UPLOAD_TRAINED_MODEL_ERROR_MESSAGE, UPLOAD_FIELD_VALUES_ERROE_MESSAGE
 from api.reauestprocessing import process_training_request
+from api.response import classification_prediction_response
 from flask import Flask, request, redirect, url_for, jsonify
 from mlmethods.trainersfactories import DefaultTrainersFacroty
 from werkzeug.utils import secure_filename
@@ -82,9 +83,8 @@ def get_prediction():
     if field_values_file and \
     is_allowed_file(field_values_file.filename, const.ALLOWED_FIELD_VALUES_FILE_EXTENSIONS):
         predictor = Predictor()
-        print("kek" + str(predictor.get_prediction(field_values_file, trained_model_id)))
-        return "Lek"
-        # return str(list(map(lambda n: n.name, FeatureNamesStorage().get_feture_names_by_model_id(trained_model_id))))
+        values_to_proba = predictor.get_prediction(field_values_file, trained_model_id)
+        return classification_prediction_response(values_to_proba)
     return UPLOAD_FIELD_VALUES_ERROE_MESSAGE
 
 #---------------------------------------------------------------

@@ -22,12 +22,7 @@ def process_default_classifier_training(data_set, target, trainer):
     trained_model_storage.save_trained_model_as_file(classifier.child_classifier, filepath)
     trained_model_storage.save_trained_model(model_db)
     feature_names_storage.save_feature_names(X.columns, generated_id)
-
     # some classifier return real numbers
-    
-    print("$$%77" + str(X.head()))
-    print("!!! " + str(classifier.predict(X)))
-
     y_predicted_int = list(map(lambda number: int(round(number)), y_predicted))
     report = ClassificationReport(
         precision = precision_score(y_holdout, y_predicted_int),

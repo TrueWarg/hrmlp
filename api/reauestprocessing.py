@@ -11,3 +11,4 @@ def process_training_request(request, trainer):
         report = process_default_classifier_training(data_set, target, trainer)
         response = classifiaction_metrics_response(report)
         return response
+        
