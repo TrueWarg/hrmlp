@@ -13,11 +13,11 @@ from storage.models.trainedmodels import TrainedModelDb
 from storage.database import init_db
 from storage.trainedmodelstorage import TraindedModelStorage, convert_id_to_file_path
 from storage.featurestorage import FeatureNamesStorage, extract_feature_names
+from config import Config
 import uuid
 
 app = Flask(__name__)
-app.config[const.UPLOAD_FOLDER_CONFIG_PARAM] = const.DEFAULT_UPLOAD_PATH
-app.config[const.SQLALCHEMY_DATABASE_URI_CONFIG_PARAM] = const.DEFAULT_DB_DIRICTORY
+app.config.from_object(Config)
 
 with app.app_context():
     init_db(app)
@@ -36,12 +36,11 @@ def upload_trained_model():
         feature_names_storage = FeatureNamesStorage()
         generated_id = str(uuid.uuid4())
         filepath = convert_id_to_file_path(generated_id)
-        model_db = TrainedModelDb(generated_id, trained_model_name, filepath, user_id='admin')
+        model_db = TrainedModelDb(generated_id, trained_model_name, filepath, user_id='lek')
         model_storage.save_trained_model(model_db)
-        trained_model_file.save(os.path.join(app.config[const.UPLOAD_FOLDER_CONFIG_PARAM], filepath))
+        trained_model_file.save(filepath)
         feature_names_storage.save_feature_names(extract_feature_names(field_values_file), generated_id)
         return generated_id
-    return UPLOAD_TRAINED_MODEL_ERROR_MESSAGE
 
 # ------------------Trees--------------------------
 @app.route('/mlmethods/training/decisiontree', methods = ['POST'])
