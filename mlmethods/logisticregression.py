@@ -19,11 +19,11 @@ class DefaultLogisticRegressionTrainer(BaseTrainer):
         )
         logistic_regression_grid = LogisticRegressionCV(Cs=c_values, cv=skf, n_jobs=const.JOBS_NUMBER)
 
-        classifier = DefaultLogistiRegressionClassifier(logistic_regression_grid)
+        classifier = DefaultLogisticRegressionClassifier(logistic_regression_grid)
         classifier.train(X_train, y_train)
         return classifier
 
-class DefaultLogistiRegressionClassifier(BaseClassifier):
+class DefaultLogisticRegressionClassifier(BaseClassifier):
     def __init__(self, logistic_regression_grid):
         self.child_classifier = logistic_regression_grid
 
