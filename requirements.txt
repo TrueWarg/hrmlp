@@ -21,4 +21,11 @@ SQLAlchemy==1.3.3
 Werkzeug==0.14.1
 psycopg2==2.7.6
 gunicorn==19.9.0
-
+pandas==0.23.0
+scikit-learn==0.19.1
+_py-xgboost-mutex==2.0
+libxgboost==0.80
+py-xgboost==0.80
+py-xgboost-cpu==0.80
+numpy==1.14.3
+joblib==0.13.1
