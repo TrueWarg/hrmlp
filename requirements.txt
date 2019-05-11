@@ -27,5 +27,4 @@ py-xgboost-mutex==2.0
 libxgboost==0.80
 py-xgboost==0.80
 py-xgboost-cpu==0.80
-numpy==1.14.3
 joblib==0.13.1
