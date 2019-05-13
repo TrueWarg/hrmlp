@@ -17,6 +17,6 @@ class FeatureNamesStorage:
 #utils
 def extract_feature_names(values_file):
     df = pd.read_csv(values_file)
-    df_dummies = pd.get_dummies(df, columns=df.columns[df.dtypes == 'object'])
-    formatted = list(map(lambda feature_name: feature_name.lower().replace(' ', ''), df_dummies.columns))
+    df.drop(df.columns[df.dtypes == 'object'], axis=1, inplace=True)
+    formatted = list(map(lambda feature_name: feature_name.lower().replace(' ', ''), df.columns))
     return formatted

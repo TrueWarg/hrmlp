@@ -20,7 +20,12 @@ class Predictor:
 # Or need to come up with something else
     def __predict(self, trained_model_object, X): 
         if isinstance(trained_model_object, (GridSearchCV, LogisticRegressionCV, RandomForestClassifier)):
-            values_to_proba = list(zip(trained_model_object.predict(X), trained_model_object.predict_proba(X)))
+            values = trained_model_object.predict(X)
+            all_proba = trained_model_object.predict_proba(X)
+            proba = []
+            for index, value in enumerate(values):
+                proba.append(all_proba[index][value])
+            values_to_proba = list(zip(values, proba))
         elif isinstance(trained_model_object, xgb.Booster):
             predicted = trained_model_object.predict(xgb.DMatrix(X))
             values_to_proba = list(zip(list(map(lambda item: int(round(item)), predicted)), predicted))

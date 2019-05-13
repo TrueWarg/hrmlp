@@ -16,7 +16,7 @@ def classification_prediction_response(values_to_proba):
     result = []
     for item in values_to_proba:
         obj = {
-            CLASSIFICATION_PREDICTION_RESULT_VALUE : item[0],
+            CLASSIFICATION_PREDICTION_RESULT_VALUE : str(item[0]),
             CLASSIFICATION_PREDICTION_RESULT_PROBABILITY : float(item[1])
         }
         result.append(obj)
